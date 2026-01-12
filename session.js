@@ -1,7 +1,8 @@
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
+import 'dotenv/config';
 
-const connUrl = 'mongodb://127.0.0.1:27017/images';
+const connUrl = process.env.mongoUrl;
 
 export default session({
   secret: "supersecretkey", // use a strong secret in production
