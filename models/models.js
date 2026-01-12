@@ -1,7 +1,8 @@
 import mongoose, { Schema } from 'mongoose';
 import passportLocalMongoose from 'passport-local-mongoose'
+import 'dotenv/config';
 
-const connUrl = 'mongodb://127.0.0.1:27017/images';
+const connUrl = process.env.mongoUrl;
 
 // ✅ Use one connection everywhere
 const conn = mongoose.createConnection(connUrl);

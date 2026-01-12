@@ -7,14 +7,14 @@ import session from '../session.js'
 import passport from 'passport';
 import { isLoggedIn, saveRedirectUrl } from '../middlewares.js';
 import { userJoiSchema } from '../Schema.js';
-
+import 'dotenv/config';
 
 
 const router = express.Router({ mergeParams: true });
 
 router.use(session);
 
-const connUrl = 'mongodb://127.0.0.1:27017/images';
+const connUrl = process.env.mongoUrl;
 
 // Use one connection everywhere
 const conn = mongoose.createConnection(connUrl);
