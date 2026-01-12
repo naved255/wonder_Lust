@@ -19,16 +19,13 @@ import 'dotenv/config';
 
 console.log(process.env.CLOUD_NAME);
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 const app = express();
-const __dirname = 'C:\\Users\\Dell\\Desktop\\web-developement\\apnaCollege\\Major projects\\wanderLists';
+const __dirname = path.dirname(__filename);
+const connUrl = process.env.mongoUrl;
 
-const connUrl = 'mongodb://127.0.0.1:27017/images';
-
-// ✅ Use one connection everywhere
 const conn = mongoose.createConnection(connUrl);
 
-//
 app.use(Session);
 app.use(flash());
 // passport
