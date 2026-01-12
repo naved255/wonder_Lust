@@ -13,7 +13,7 @@ export default session({
     ttl: 14 * 24 * 60 * 60  // optional: session expiry in seconds (14 days here)
   }),
   cookie: {
-    secure: false,           // set true if using HTTPS
+    secure: true,           // set true if using HTTPS
     maxAge: 14 * 24 * 60 * 60 * 1000 // optional: cookie expiry (14 days)
   }
 })
