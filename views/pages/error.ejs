@@ -1,0 +1,21 @@
+<body class="min-h-screen bg-light d-flex justify-content-center align-items-center">
+
+  <% layout('./layout/boilerplate')-%>
+
+  <div class="card shadow-lg border-0 rounded-4 text-center p-5"
+    style="max-width: 500px; background: #fff5f5;">
+    <div class="mb-3">
+      <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#dc3545" class="bi bi-exclamation-circle"
+        viewBox="0 0 16 16">
+        <path
+          d="M7.001 11a1 1 0 1 0 2 0 1 1 0 0 0-2 0zm.93-7.481a.5.5 0 0 0-.858 0l-3.5 6a.5.5 0 0 0 .43.748h7a.5.5 0 0 0 .43-.748l-3.5-6z" />
+      </svg>
+    </div>
+
+    <h2 class="fw-bold text-danger mb-3"><%= status %></h2>
+    <p class="text-muted mb-4"><%= message %></p>
+
+    <a href="/" class="btn btn-danger rounded-pill px-4 py-2">Go Back</a>
+  </div>
+
+</body>

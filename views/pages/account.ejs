@@ -1,0 +1,196 @@
+<% layout('./layout/boilerplate') -%>
+<body class="bg-white text-gray-900 font-sans">
+
+  <!-- Navbar -->
+  <header class="bg-light border-bottom shadow-sm">
+    <div class="container py-3 d-flex flex-wrap justify-content-between align-items-center">
+      <h1 class="h4 text-dark mb-0">Hosted by <%= info.userId.username %></h1>
+      <button type="button" class="btn btn-outline-info mt-2 mt-md-0">Contact Host</button>
+    </div>
+  </header>
+
+  <main class="container py-5">
+
+    <!-- Property Photos -->
+    <section class="mb-5">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
+        <h2 class="h3 fw-semibold d-flex align-items-center gap-2 text-dark">
+          <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#1f93ba">
+            <path d="M680-600h80v-80h-80v80Zm0 160h80v-80h-80v80Zm0 160h80v-80h-80v80Zm0 160v-80h160v-560H480v56l-80-58v-78h520v720H680Zm-640 0v-400l280-200 280 200v400H360v-200h-80v200H40Zm80-80h80v-200h240v200h80v-280L320-622 120-480v280Zm560-360Z"/>
+          </svg> 
+          House Photos
+        </h2>
+        <span class="text-muted small">Showing <%= info.images.length %> results</span>
+      </div>
+
+      <% if (info.images.length > 0) { %>
+        <div class="row g-4">
+          <% info.images.forEach(image => { %>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <a href="<%=image.path%>" target="_blank" class="d-block">
+                <img src="<%= image.path %>" alt="<%= image.filename %>" 
+                     class="img-fluid rounded-3 shadow-sm border border-light"
+                     style="object-fit: cover; height: 220px; width: 100%;">
+              </a>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="bg-light border border-danger-subtle p-5 rounded-3 text-center shadow-sm">
+          <h4 class="text-danger">No houses listed yet</h4>
+          <p class="text-muted mb-0">Check back later for new properties!</p>
+        </div>
+      <% } %>
+    </section>
+
+    <!-- Host Info -->
+    <section class="bg-light border rounded-4 shadow-sm p-4 p-md-5 mb-5">
+      <h2 class="h4 text-center text-primary fw-bold mb-4">Host Information</h2>
+
+      <% if (info) { %>
+      <div class="row g-4">
+        <div class="col-sm-6">
+          <p><strong class="text-warning">📍 Address:</strong> <%= info.address %></p>
+          <p><strong class="text-warning">🌍 Country:</strong> <%= info.country %></p>
+        </div>
+        <div class="col-sm-6">
+          <p><strong class="text-warning">💰 Price:</strong> ₹<%= info.price %></p>
+          <p><strong class="text-warning">📞 Phone:</strong> <%= info.phone %></p>
+        </div>
+      </div>
+
+      <p class="mt-4 text-secondary border-top pt-3">
+        <strong class="text-warning">📝 Description:</strong> <%= info.description %>
+      </p>
+      <% } else { %>
+      <p class="text-muted text-center">No host information provided.</p>
+      <% } %>
+    </section>
+
+    <!-- Reviews Section -->
+<section class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+      
+      <!-- Header -->
+      <div class="text-center mb-5">
+        <h2 class="fw-bold text-dark">Customer Reviews</h2>
+        <% if(myUser){ %>
+        <p class="text-muted">Share your experience with this property</p>
+        <% } %>
+      </div>
+
+      <!-- Review Form -->
+      <% if(myUser){ %>
+      <div class="card border-0 shadow-sm mb-5">
+        <div class="card-body p-4">
+          <h5 class="card-title mb-3 text-danger fw-semibold">Leave a Review</h5>
+          <form action="/user/<%= info.userId._id %>/review" method="post">
+            <div class="mb-3">
+              <label for="rating" class="form-label fw-semibold">Your Rating:</label>
+              <input type="range" id="rating" name="rating" min="1" max="5" class="form-range">
+              <div class="d-flex justify-content-between small text-secondary">
+                <span>1⭐</span><span>2⭐</span><span>3⭐</span><span>4⭐</span><span>5⭐</span>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="review" class="form-label fw-semibold">Your Review:</label>
+              <textarea id="review" name="review" rows="4" placeholder="Write your review..."
+                class="form-control  border-2 rounded-3 shadow-sm" required></textarea>
+            </div>
+
+            <div class="text-end">
+              <button type="submit" class="btn btn-danger px-4 fw-semibold shadow-sm">
+                Submit Review
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <% } %>
+
+      <!-- Divider -->
+      <hr class="my-5 border-2 opacity-75">
+
+      <!-- Existing Reviews -->
+      <div class="mb-4">
+        <h4 class="fw-bold mb-4 text-dark">What People Are Saying</h4>
+
+        <% if (info && info.reviews.length > 0) { %>
+        <div class="d-flex flex-column gap-4">
+          <% for (let element of info.reviews) { %>
+          <div class="contaner">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="fw-bold text-dark mb-0"><%= element.givenBy.username %></h6>
+                <div class="text-warning">
+                  <% for(let i=0; i < element.rating; i++) { %> ⭐ <% } %>
+                </div>
+              </div>
+              <p class="text-secondary mb-0"><%= element.review %></p>
+            </div>
+          </div>
+          <% } %>
+        </div>
+        <% } else { %>
+        <div class="text-center text-muted">
+          <p>No reviews yet. Be the first to write one!</p>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- Map Section -->
+    <section class="mb-5">
+      <h3 class="text-center fw-bold mb-3" style="font-family: 'Pacifico', cursive; color: #1f93ba;">
+  Map<span style="color: #f59e0b;">location</span>
+</h3>
+      <div id="map" class="rounded-4 shadow-sm w-100" style="height: 400px;"></div>
+    </section>
+
+  </main>
+
+  <!-- Floating Button -->
+  <!-- <button
+    class="position-fixed bottom-0 end-0 m-4 btn btn-danger btn-lg rounded-pill shadow-lg">
+    📞 Contact Host
+  </button> -->
+
+  <script>
+    async function getCoordinates(placeName) {
+      try {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeName)}`;
+        const response = await fetch(url, { headers: { 'User-Agent': 'wonderLand-AirbnbClone' }});
+        const data = await response.json();
+        if (data && data.length > 0) {
+          const { lat, lon } = data[0];
+          return { lat: parseFloat(lat), lon: parseFloat(lon) };
+        } else {
+          alert("Location not found!");
+          return null;
+        }
+      } catch (error) {
+        console.error("Error fetching coordinates:", error);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const place = "<%= info.address %>, <%= info.country %>";
+      const coords = await getCoordinates(place);
+      if (!coords) return;
+      const map = L.map("map").setView([coords.lat, coords.lon], 13);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+      L.marker([coords.lat, coords.lon])
+        .addTo(map)
+        .bindPopup(`<b>${place}</b>`)
+        .openPopup();
+    });
+  </script>
+
+</body>

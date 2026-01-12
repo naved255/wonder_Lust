@@ -1,0 +1,105 @@
+<body class="bg-light text-dark">
+
+  <!-- Success Alert -->
+  <% if (success && success.length > 0) { %>
+  <div class="alert alert-success alert-dismissible fade show mb-0 rounded-0" role="alert">
+    <%= success %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  <% } %>
+
+  <!-- Error Alert -->
+  <% if (error && error.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show mb-0 rounded-0" role="alert">
+    <%= error %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  <% } %>
+
+  <% layout('./layout/boilerplate') -%>
+
+  <!-- Header -->
+  <header class="bg-primary text-white py-3 shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
+      <h1 class="h4 mb-0">Welcome, <%= user.username %> 👋</h1>
+      <div class="d-flex gap-2">
+        
+          <% if (info) { %>
+            <% if (info.images.length > 0) { %>
+             
+            <% } else { %>
+             <a href="/image/upload" class="btn bitn-light text-primary fw-sembold shadow-sm">+ Rent Your House </a>
+            <% } %>
+          <% } else { %>
+            <a href="/image/upload" class="btn bitn-light text-primary fw-sembold shadow-sm">+ Rent Your House </a>
+          <% } %>
+       
+        <a href="/user/logout" class="btn btn-danger shadow-sm fw-semibold">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container py-5">
+
+    <!-- User Info Section -->
+    <% if (info) { %>
+    <section class="bg-white p-4 p-md-5 rounded-4 shadow-sm mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h4 fw-bold mb-0 text-primary">Your Info 📝</h2>
+        <a href="/image/upload" class="btn btn-outline-primary btn-sm">Edit Info</a>
+      </div>
+
+      <div class="row gy-3">
+        <div class="col-md-6">
+          <p><span class="fw-semibold text-secondary">Country:</span> <%= info.country %></p>
+        </div>
+        <div class="col-md-6">
+          <p><span class="fw-semibold text-secondary">Address:</span> <%= info.address %></p>
+        </div>
+        <div class="col-md-6">
+          <p><span class="fw-semibold text-secondary">Price:</span> ₹<%= info.price %> / month</p>
+        </div>
+        <div class="col-md-6">
+          <p><span class="fw-semibold text-secondary">Phone:</span> <%= info.phone %></p>
+        </div>
+        <div class="col-12">
+          <p><span class="fw-semibold text-secondary">Description:</span> <%= info.description %></p>
+        </div>
+      </div>
+    </section>
+    <% } %>
+
+    <!-- Uploaded Houses Section -->
+    <% if (info && info.images.length > 0) { %>
+    <section class="mb-5">
+      <h2 class="h4 fw-bold text-primary mb-4">Your Uploaded photos</h2>
+      <div class="row g-4">
+        <% info.images.forEach(file => { %>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
+            <a href="<%= file.path %>" target="_blank">
+              <img src="<%= file.path %>" alt="<%= file.filename %>" class="card-img-top img-fluid" style="height: 200px; object-fit: cover;">
+            </a>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </section>
+    <% } else { %>
+
+    <!-- Empty State -->
+    <section class="text-center bg-white p-5 rounded-4 shadow-sm">
+      <h2 class="h5 fw-bold text-primary">Welcome to Your Profile</h2>
+      <p class="text-muted mt-2">
+        • If you’re a host, upload your house for rent. <br>
+        • If you’re a guest, explore and rate hosts.
+      </p>
+      <a href="/image/upload" class="btn btn-primary px-5 mt-3 fw-semibold shadow-sm">
+        Get Started
+      </a>
+    </section>
+    <% } %>
+
+  </main>
+</body>

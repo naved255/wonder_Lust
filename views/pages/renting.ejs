@@ -1,0 +1,255 @@
+<body class="bg-light">
+
+  <% layout('./layout/boilerplate') -%>
+
+    <!-- Success & Error Alerts -->
+    <% if (success && success.length> 0) { %>
+      <div class="alert alert-success alert-dismissible fade show rounded-0 mb-0" role="alert">
+        <%= success %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <% } %>
+
+        <% if (error && error.length> 0) { %>
+          <div class="alert alert-danger alert-dismissible fade show rounded-0 mb-0" role="alert">
+            <%= error %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          <% } %>
+
+            <!-- Upload Form Section -->
+            <section class="py-5">
+              <div class="container d-flex justify-content-center">
+                <div class="card shadow-lg w-100" style="max-width: 650px;">
+                  <div class="card-body p-4 p-md-5">
+                    <h1 class="h4 text-center mb-4 text-primary fw-bold">🏠 Start Renting</h1>
+
+                    <form <% if (data) { %> action="/image/upload?_method=PATCH" <% } else { %> action="/image/upload"
+                        <% } %>
+                          method="POST"
+                          enctype="multipart/form-data"
+                          class="needs-validation" novalidate
+                          >
+
+                          <!-- Country -->
+                          <div class="mb-3">
+                            <label for="country" class="form-label fw-semibold">Country</label>
+                            <input type="text" name="country" id="country" <% if (data) { %> value="<%= data.country %>"
+                              <% } %>
+                                placeholder="Enter country"
+                                class="form-control"
+                                required
+                                >
+                                <div class="invalid-feedback">Country field is required.</div>
+                          </div>
+
+                          <!-- Hidden Coordinates -->
+                          <input type="hidden" name="longitude" id="longitude"
+                            value="<%if(data){ if(data.geometry){%><%=data.geometry.coordinates[0]%><%}}%>">
+                          <input type="hidden" name="latitude" id="latitude"
+                            value="<%if(data){ if(data.geometry){%><%=data.geometry.coordinates[1]%><%}}%>">
+
+                          <!-- Address -->
+                          <div class="mb-3">
+                            <label for="address" class="form-label fw-semibold">Address</label>
+                            <input type="text" name="address" id="address" <% if (data) { %> value="<%= data.address %>"
+                              <% } %>
+                                placeholder="Enter address"
+                                class="form-control"
+                                required
+                                >
+                                <div class="invalid-feedback">Address field is required.</div>
+                          </div>
+
+                          <!-- Price -->
+                          <div class="mb-3">
+                            <label for="price" class="form-label fw-semibold">Price per Night (₹)</label>
+                            <input type="number" name="price" id="price" <% if (data) { %> value="<%= data.price %>" <%
+                                } %>
+                                placeholder="Enter price per night"
+                                class="form-control"
+                                required
+                                >
+                                <div class="invalid-feedback">Price field is required.</div>
+                          </div>
+
+                          <!-- Phone -->
+                          <div class="mb-3">
+                            <label for="phone" class="form-label fw-semibold">Phone Number</label>
+                            <input type="tel" name="phone" id="phone" <% if (data) { %> value="<%= data.phone %>" <% }
+                                %>
+                                placeholder="Enter phone number"
+                                class="form-control"
+                                required
+                                >
+                                <div class="invalid-feedback">Phone number is required.</div>
+                          </div>
+
+                          <!-- File Upload -->
+                          <div class="mb-3">
+                            <label for="files" class="form-label fw-semibold">Upload Photos</label>
+                            <input type="file" name="files" id="files" multiple class="form-control" accept="image/*"
+                              required>
+                            <div class="invalid-feedback">Please upload at least one image.</div>
+                          </div>
+
+                          <!-- Existing Images -->
+                          <% if (data && data.images.length> 0) { %>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                              <% data.images.forEach(img=> { %>
+                                <img src="<%= img.path %>" alt="<%= img.filename %>" class="rounded shadow-sm"
+                                  style="width: 120px; height: 100px; object-fit: cover;">
+                                <% }) %>
+                            </div>
+                            <% } %>
+
+                              <!-- Description -->
+                              <div class="mb-3">
+                                <label for="description" class="form-label fw-semibold">Description</label>
+                                <textarea name="description" id="description" rows="4"
+                                  placeholder="Describe your house..."
+                                  class="form-control"><% if (data) { %><%= data.description %><% } %></textarea>
+
+                              </div>
+
+                              <!-- Map Section -->
+                              <div class="mb-4">
+                                <label class="form-label fw-semibold">Select Location on Map</label>
+                                <div id="map" style="height: 300px; border-radius: 0.5rem; overflow: hidden;"></div>
+                              </div>
+
+                              <!-- Submit Button -->
+                              <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                                Submit
+                              </button>
+
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <script>
+
+              let latInput = document.getElementById("latitude");
+              let lonInput = document.getElementById("longitude");
+
+              const lat = latInput.value || 20.5937
+              const lon = lonInput.value || 78.9629
+
+              console.log(latInput.value, lonInput.value);
+
+
+              // Initialize map
+
+
+              document.addEventListener("DOMContentLoaded", async () => {
+
+                const map = L.map("map").setView([lat, lon], 13);
+                L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                  maxZoom: 19,
+                  attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+                let marker = L.marker([lat, lon])
+                  .addTo(map)
+                  .bindPopup(`<b>India center</b>`)
+                  .openPopup();
+
+                map.on("click", function (e) {
+                  const newLat = e.latlng.lat;
+                  const newLon = e.latlng.lng;
+                  marker.setLatLng(e.latlng);
+                  latInput.value = newLat;
+                  lonInput.value = newLon;
+
+                  updateAddressFromCoordinates(newLat, newLon);
+
+                });
+
+                document.getElementById("country").addEventListener("blur", () => { updateMapFromAddress(map, marker) });
+                document.getElementById("address").addEventListener("blur", () => { updateMapFromAddress(map, marker) });
+
+
+              });
+
+
+
+
+              // 🧭 Function to automatically locate address
+              async function updateMapFromAddress(map, marker) {
+                const country = document.getElementById("country").value.trim();
+                const address = document.getElementById("address").value.trim();
+
+                if (!country || !address) return;
+
+                const fullAddress = `${address}, ${country}`;
+                const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`;
+
+                try {
+                  const response = await fetch(url);
+                  const geoData = await response.json();   // ✅ renamed variable
+
+                  if (geoData && geoData.length > 0) {
+                    const newLat = parseFloat(geoData[0].lat);
+                    const newLon = parseFloat(geoData[0].lon);
+
+                    map.setView([newLat, newLon], 13);
+                    marker.setLatLng([newLat, newLon]);
+
+                    document.getElementById("latitude").value = newLat;
+                    document.getElementById("longitude").value = newLon;
+                  }
+                } catch (err) {
+                  console.error("Error fetching location:", err);
+                }
+              }
+
+              async function updateAddressFromCoordinates(lat, lon) {
+                const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+
+                try {
+                  const response = await fetch(url);
+                  const data = await response.json();
+
+                  if (data && data.address) {
+                    // Extract the parts you want
+                    const country = data.address.country || "";
+                    const road = data.address.road || "";
+                    const city = data.address.city || data.address.town || data.address.village || "";
+                    const state = data.address.state || "";
+
+                    // Combine into one readable address
+                    const address = [road, city, state].filter(Boolean).join(", ");
+
+                    // Fill form fields automatically
+                    document.getElementById("country").value = country;
+                    document.getElementById("address").value = address;
+
+                    console.log("📍 Updated fields from coordinates:", { country, address });
+                  }
+                } catch (err) {
+                  console.error("Error in reverse geocoding:", err);
+                }
+              }
+
+
+              // 🌍 When user finishes typing country or address, trigger lookup
+
+
+              // Bootstrap validation
+              (() => {
+                'use strict'
+                const forms = document.querySelectorAll('.needs-validation')
+                Array.from(forms).forEach(form => {
+                  form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                      event.preventDefault()
+                      event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                  }, false)
+                })
+              })();
+            </script>
+
+</body>
