@@ -1,25 +1,17 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import expressError from '../errors/expressError.js';
 import wrapAsync from '../errors/wrapAsync.js';
 import { userInfo, imageModel } from '../models/models.js';
 import { cloudinary, storage } from '../cloudinaryConfig.js';
 import multer from 'multer';
-import session from '../session.js';
 import { isLoggedIn, saveRedirectUrl } from '../middlewares.js';
 import { userInfoValidationSchema } from '../Schema.js';
 import 'dotenv/config';
 
 
+
 const router = express.Router({ mergeParams: true });
 
-router.use(session);
-
-
-const connUrl = process.env.mongoUrl;
-
-// ✅ Use one connection everywhere
-const conn = mongoose.createConnection(connUrl);
 
 
 const upload = multer({ storage });

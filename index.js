@@ -17,6 +17,7 @@ import methodOverride from 'method-override'
 import cors from 'cors'
 import 'dotenv/config';
 import { fileURLToPath } from 'url';
+import conn from './mongooseConnection.js'
 
 console.log(process.env.CLOUD_NAME);
 
@@ -24,9 +25,8 @@ const port = process.env.PORT || 3000;
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const connUrl = process.env.mongoUrl;
-console.log(connUrl);
-const conn = mongoose.createConnection(connUrl);
+
+
 
 app.use(Session);
 app.use(flash());

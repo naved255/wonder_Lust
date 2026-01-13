@@ -11,7 +11,8 @@ export default session({
   store: MongoStore.create({
     mongoUrl: connUrl,      // store sessions in MongoDB
     collectionName: 'sessions',
-    ttl: 14 * 24 * 60 * 60  // optional: session expiry in seconds (14 days here)
+    ttl: 14 * 24 * 60 * 60,  // optional: session expiry in seconds (14 days here)
+    touchAfter: 24 * 3600  
   }),
   cookie: {
     secure: true,           // set true if using HTTPS

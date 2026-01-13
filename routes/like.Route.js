@@ -1,12 +1,13 @@
 import express from 'express';
 import wrapAsync from '../errors/wrapAsync.js';
 import { likes } from '../models/models.js';
-import session from '../session.js';
+
+
 
 
 const router = express.Router()
 
-router.use(session);
+
 
 router.post('/like', wrapAsync(async (req, res, next) => {
 

@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import wrapAsync from '../errors/wrapAsync.js';
 import { userAcc } from '../models/models.js';
 import { userInfo } from '../models/models.js';
-import session from '../session.js'
 import passport from 'passport';
 import { isLoggedIn, saveRedirectUrl } from '../middlewares.js';
 import { userJoiSchema } from '../Schema.js';
@@ -12,18 +11,13 @@ import 'dotenv/config';
 
 const router = express.Router({ mergeParams: true });
 
-router.use(session);
-
-const connUrl = process.env.mongoUrl;
-
-// Use one connection everywhere
-const conn = mongoose.createConnection(connUrl);
-
 
 
 router.get('/', isLoggedIn, wrapAsync(async (req, res, next) => {
-
+  console.log("profile");
+  console.log(req.user);
   const info = await userInfo.findOne({ userId: req.user._id }).populate('images').populate('userId');
+  console.log(info);
 
   res.render('./pages/user', { info: info, user:res.locals.user });
 
@@ -52,7 +46,7 @@ router.get('/login', (req, res) => {
   res.render('./pages/seller');
 })
 
-router.post('/login', saveRedirectUrl, passport.authenticate("local", { failureRedirect: '/user/login', failureFlash: true }), wrapAsync(async (req, res, next) => {
+router.post('/login',passport.authenticate("local", { failureRedirect: '/user/login', failureFlash: true }), saveRedirectUrl,  wrapAsync(async (req, res, next) => {
 
   req.flash('success', 'Loggined successfully');
   let path = res.locals.redirect || "/";

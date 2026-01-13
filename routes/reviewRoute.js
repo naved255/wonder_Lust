@@ -1,13 +1,14 @@
 import express from 'express';
 import wrapAsync from '../errors/wrapAsync.js';
-import session from '../session.js';
+
 import mongoose from 'mongoose'
 import { userInfo, userReview } from '../models/models.js';
 import { isLoggedIn } from '../middlewares.js';
 
+
 const router = express.Router({mergeParams: true});
 
-router.use(session);
+
 
 router.get('/:id/review', (req, res) => {
   res.redirect(`/user/${req.params.id}`);
