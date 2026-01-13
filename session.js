@@ -15,7 +15,9 @@ export default session({
     touchAfter: 24 * 3600  
   }),
   cookie: {
-    secure: true,           // set true if using HTTPS
-    maxAge: 14 * 24 * 60 * 60 * 1000 // optional: cookie expiry (14 days)
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    maxAge: 14 * 24 * 60 * 60 * 1000
   }
 })

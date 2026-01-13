@@ -65,6 +65,7 @@ app.use('/user', userRoute);
 app.use('/user', likeRoute);
 app.use('/user', reviewRoute);
 app.use('/image', imageUploadRoute);
+app.set('trust proxy', 1);
 
 // Routes
 app.get('/', wrapAsync(async (req, res, next) => {
